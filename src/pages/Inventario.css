@@ -1,0 +1,152 @@
+.nk-inv-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--nk-space-4);
+  margin-bottom: var(--nk-space-4);
+  flex-wrap: wrap;
+}
+
+.nk-inv-filtros {
+  display: flex;
+  gap: var(--nk-space-3);
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: var(--nk-space-5);
+}
+
+.nk-inv-genero-tabs {
+  display: flex;
+  background: var(--nk-surface);
+  border: 1px solid var(--nk-border);
+  border-radius: var(--nk-radius-md);
+  padding: 3px;
+}
+
+.nk-inv-genero-tab {
+  border: none;
+  background: transparent;
+  padding: 7px 14px;
+  border-radius: var(--nk-radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--nk-ink-soft);
+  cursor: pointer;
+}
+
+.nk-inv-genero-tab-activo {
+  background: var(--nk-teal);
+  color: white;
+}
+
+.nk-inv-filtros select {
+  padding: 9px 12px;
+  border-radius: var(--nk-radius-sm);
+  border: 1px solid var(--nk-border);
+  background: var(--nk-surface);
+}
+
+.nk-inv-buscador {
+  flex: 1;
+  min-width: 200px;
+  padding: 9px 12px;
+  border-radius: var(--nk-radius-sm);
+  border: 1px solid var(--nk-border);
+}
+
+.nk-inv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--nk-space-4);
+}
+
+.nk-inv-card {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.nk-inv-card-img {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--nk-surface-sunken);
+}
+
+.nk-inv-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nk-inv-card-img-placeholder {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font-size: 40px;
+  opacity: 0.4;
+}
+
+.nk-inv-card-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.nk-inv-card-body {
+  padding: var(--nk-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nk-inv-card-body h3 {
+  font-size: 16px;
+  margin-top: 4px;
+}
+
+.nk-inv-card-meta {
+  font-size: 13px;
+  color: var(--nk-ink-soft);
+  margin: 0;
+}
+
+.nk-inv-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.nk-inv-card-precio {
+  font-family: var(--nk-font-mono);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.nk-inv-card-stock {
+  font-size: 12px;
+  color: var(--nk-ink-soft);
+}
+
+.nk-inv-card-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.nk-inv-card-actions .nk-btn {
+  flex: 1;
+  padding: 7px 10px;
+  font-size: 12px;
+}
+
+.nk-inv-genero-tab-nino {
+  background: #52C7E4 !important;
+  color: white !important;
+}
+
+.nk-inv-genero-tab-nina {
+  background: #EF4C87 !important;
+  color: white !important;
+}

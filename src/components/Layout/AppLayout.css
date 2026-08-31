@@ -1,0 +1,21 @@
+.nk-app-shell {
+  min-height: 100vh;
+}
+
+.nk-app-main {
+  margin-left: var(--nk-sidebar-w);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.nk-app-content {
+  flex: 1;
+  padding: var(--nk-space-5);
+}
+
+@media (max-width: 860px) {
+  .nk-app-main {
+    margin-left: 0;
+  }
+}

@@ -1,0 +1,215 @@
+@import './tokens.css';
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--nk-bg);
+  color: var(--nk-ink);
+  font-family: var(--nk-font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--nk-font-display);
+  font-weight: 600;
+  color: var(--nk-ink);
+  margin: 0;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--nk-teal);
+  outline-offset: 2px;
+}
+
+/* --- Motivo de firma: costura punteada --- */
+.nk-stitch {
+  border: none;
+  border-top: 2px dashed var(--nk-border);
+  margin: 0;
+}
+
+.nk-stitch-v {
+  border-left: 2px dashed var(--nk-border);
+  height: 100%;
+}
+
+/* --- Botones --- */
+.nk-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nk-space-2);
+  padding: 10px 18px;
+  border-radius: var(--nk-radius-md);
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.nk-btn:active {
+  transform: translateY(1px);
+}
+
+.nk-btn-primary {
+  background: var(--nk-teal);
+  color: white;
+}
+.nk-btn-primary:hover {
+  background: var(--nk-teal-deep);
+}
+.nk-btn-primary:disabled {
+  background: var(--nk-ink-faint);
+  cursor: not-allowed;
+}
+
+.nk-btn-ghost {
+  background: transparent;
+  color: var(--nk-ink-soft);
+  border-color: var(--nk-border);
+}
+.nk-btn-ghost:hover {
+  background: var(--nk-surface-sunken);
+  color: var(--nk-ink);
+}
+
+.nk-btn-danger {
+  background: transparent;
+  color: var(--nk-coral);
+  border-color: var(--nk-coral-tint);
+}
+.nk-btn-danger:hover {
+  background: var(--nk-coral-tint);
+}
+
+/* --- Campos --- */
+.nk-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nk-space-2);
+}
+
+.nk-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--nk-ink-soft);
+}
+
+.nk-field input,
+.nk-field select {
+  padding: 10px 12px;
+  border-radius: var(--nk-radius-sm);
+  border: 1px solid var(--nk-border);
+  background: var(--nk-surface);
+  color: var(--nk-ink);
+}
+
+.nk-field input:focus,
+.nk-field select:focus {
+  border-color: var(--nk-teal);
+}
+
+/* --- Tarjeta tipo etiqueta --- */
+.nk-card {
+  background: var(--nk-surface);
+  border: 1px solid var(--nk-border);
+  border-radius: var(--nk-radius-lg);
+  box-shadow: var(--nk-shadow-sm);
+}
+
+/* --- Chips de estado (como sello de etiqueta) --- */
+.nk-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.nk-chip-teal { background: var(--nk-teal-tint); color: var(--nk-teal-deep); }
+.nk-chip-marigold { background: var(--nk-marigold-tint); color: #8A5B18; }
+.nk-chip-coral { background: var(--nk-coral-tint); color: #A13337; }
+.nk-chip-green { background: var(--nk-green-tint); color: #3E6B41; }
+
+.nk-error-text {
+  color: var(--nk-coral);
+  font-size: 13px;
+}
+
+.nk-offline-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: var(--nk-coral);
+  color: white;
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.nk-dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--nk-space-4);
+  margin-bottom: var(--nk-space-4);
+}
+
+.nk-dashboard-stat {
+  padding: var(--nk-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.15s ease;
+}
+
+.nk-dashboard-stat:hover {
+  box-shadow: var(--nk-shadow-md);
+}
+
+.nk-dashboard-stat strong {
+  font-family: var(--nk-font-display);
+  font-size: 26px;
+  color: var(--nk-teal-deep);
+}
+
+.nk-dashboard-alerta {
+  padding: var(--nk-space-4);
+}
+
+.nk-dashboard-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+h1, h2, h3 {
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}

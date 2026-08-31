@@ -1,0 +1,107 @@
+.nk-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: var(--nk-sidebar-w);
+  background: var(--nk-surface);
+  border-right: 1px solid var(--nk-border);
+  display: flex;
+  flex-direction: column;
+  padding: var(--nk-space-4);
+  z-index: 40;
+  transition: transform 0.2s ease;
+}
+
+.nk-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: var(--nk-space-2) var(--nk-space-2) var(--nk-space-3);
+}
+
+.nk-sidebar-brand {
+  display: flex;
+  justify-content: center;
+  padding: var(--nk-space-2) var(--nk-space-2) var(--nk-space-4);
+}
+
+.nk-sidebar-logo {
+  width: 100%;
+  max-width: 140px;
+  height: auto;
+  object-fit: contain;
+}
+
+.nk-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: var(--nk-space-3);
+  flex: 1;
+  overflow-y: auto;
+}
+
+.nk-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--nk-radius-sm);
+  color: var(--nk-ink-soft);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.nk-sidebar-link:hover {
+  background: var(--nk-surface-sunken);
+  color: var(--nk-ink);
+}
+
+.nk-sidebar-link-activo {
+  background: var(--nk-teal-tint);
+  color: var(--nk-teal-deep);
+}
+
+.nk-sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--nk-space-3) var(--nk-space-2) var(--nk-space-1);
+  border-top: 1px dashed var(--nk-border);
+}
+
+.nk-sidebar-user {
+  font-size: 13px;
+  color: var(--nk-ink-soft);
+  font-weight: 600;
+}
+
+.nk-sidebar-overlay {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .nk-sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--nk-shadow-lg);
+  }
+  .nk-sidebar-abierto {
+    transform: translateX(0);
+  }
+  .nk-sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(35, 48, 58, 0.35);
+    z-index: 30;
+  }
+}
+
+.nk-tema-toggle {
+  width: calc(100% - 16px);
+  margin: 8px;
+  justify-content: flex-start;
+}

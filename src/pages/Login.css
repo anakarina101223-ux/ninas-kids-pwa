@@ -1,0 +1,78 @@
+.nk-login-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nk-space-4);
+  padding: var(--nk-space-5);
+  background:
+    radial-gradient(circle at 12% 18%, var(--nk-teal-tint) 0%, transparent 45%),
+    radial-gradient(circle at 88% 82%, var(--nk-marigold-tint) 0%, transparent 40%),
+    var(--nk-bg);
+}
+
+.nk-login-tag {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  background: var(--nk-surface);
+  border: 1px solid var(--nk-border);
+  border-radius: 20px;
+  box-shadow: var(--nk-shadow-lg);
+  padding: 40px 32px 32px;
+}
+
+.nk-login-tag-hole {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--nk-bg);
+  border: 3px solid var(--nk-surface);
+  box-shadow: 0 2px 4px rgba(35, 48, 58, 0.15) inset;
+}
+
+.nk-login-tag-hole::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 2px dashed var(--nk-border);
+}
+
+.nk-login-brand {
+  text-align: center;
+}
+
+.nk-login-eyebrow {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nk-teal);
+  margin-bottom: 6px;
+}
+
+.nk-login-logo {
+  width: 100%;
+  max-width: 180px;
+  height: auto;
+  object-fit: contain;
+  margin-top: 6px;
+}
+
+.nk-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nk-space-4);
+}
+
+.nk-login-footer {
+  font-size: 12px;
+  color: var(--nk-ink-faint);
+}

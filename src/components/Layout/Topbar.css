@@ -1,0 +1,32 @@
+.nk-topbar {
+  height: var(--nk-topbar-h);
+  display: flex;
+  align-items: center;
+  gap: var(--nk-space-3);
+  padding: 0 var(--nk-space-5);
+  background: var(--nk-surface);
+  border-bottom: 1px solid var(--nk-border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.nk-topbar-title {
+  flex: 1;
+  font-size: 18px;
+}
+
+.nk-topbar-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--nk-ink);
+}
+
+@media (max-width: 860px) {
+  .nk-topbar-menu-btn {
+    display: block;
+  }
+}

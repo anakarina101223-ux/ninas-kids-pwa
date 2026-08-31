@@ -1,0 +1,133 @@
+.nk-ventas-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--nk-space-4);
+  margin-bottom: var(--nk-space-4);
+  flex-wrap: wrap;
+}
+
+.nk-ventas-filtro-cliente {
+  padding: 9px 12px;
+  border-radius: var(--nk-radius-sm);
+  border: 1px solid var(--nk-border);
+  margin-bottom: var(--nk-space-4);
+}
+
+.nk-ventas-table-wrap {
+  overflow-x: auto;
+}
+
+.nk-venta-resultados {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px solid var(--nk-border);
+  border-radius: var(--nk-radius-sm);
+  padding: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.nk-venta-resultado {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  border-radius: var(--nk-radius-sm);
+  cursor: pointer;
+  font-size: 13px;
+  text-align: left;
+}
+
+.nk-venta-resultado:hover {
+  background: var(--nk-surface-sunken);
+}
+
+.nk-venta-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nk-venta-item {
+  display: grid;
+  grid-template-columns: 1fr 60px 70px 24px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px dashed var(--nk-border);
+  border-radius: var(--nk-radius-sm);
+  font-size: 13px;
+}
+
+.nk-venta-item input {
+  width: 100%;
+  padding: 4px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--nk-border);
+  text-align: center;
+}
+
+.nk-venta-item-subtotal {
+  font-family: var(--nk-font-mono);
+  text-align: right;
+}
+
+.nk-venta-item-quitar {
+  border: none;
+  background: none;
+  color: var(--nk-coral);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.nk-venta-total {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--nk-font-display);
+  font-size: 20px;
+  font-weight: 600;
+  padding-top: var(--nk-space-2);
+  border-top: 1px solid var(--nk-border);
+}
+
+.nk-devolucion-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.nk-devolucion-item {
+  border: 1px dashed var(--nk-border);
+  border-radius: var(--nk-radius-sm);
+  padding: 10px 12px;
+}
+
+.nk-devolucion-item-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nk-devolucion-item-precio {
+  margin-left: auto;
+  font-weight: 400;
+  color: var(--nk-ink-soft);
+  font-size: 12px;
+}
+
+.nk-devolucion-item-detalle {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--nk-border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

@@ -1,0 +1,87 @@
+:root {
+  /* Color — superficie */
+  --nk-bg: #F6F5F1;
+  --nk-surface: #FFFFFF;
+  --nk-surface-sunken: #EFEDE6;
+  --nk-border: #E1DDD2;
+
+  /* Color — tinta / texto */
+  --nk-ink: #2B2B71;
+  --nk-ink-soft: #5C5C8A;
+  --nk-ink-faint: #9797B8;
+
+  /* Color — marca Nina's Kids */
+  --nk-teal: #2B2B71;        /* azul marino — primario */
+  --nk-teal-deep: #4F307E;   /* morado — hover del primario */
+  --nk-teal-tint: #E3F6FC;   /* celeste claro — fondos suaves */
+
+  --nk-marigold: #FF9800;    /* naranja */
+  --nk-marigold-tint: #FFECD1;
+
+  --nk-coral: #EF4C87;       /* rosa/magenta — alertas, pendientes */
+  --nk-coral-tint: #FDE6F0;
+
+  --nk-green: #83CAB1;       /* menta — éxito, pagado */
+  --nk-green-tint: #E5F5EF;
+
+  --nk-yellow: #F5D115;      /* amarillo — disponible para acentos puntuales */
+  --nk-yellow-tint: #FDF6D3;
+
+  /* Tipografía */
+  --nk-font-display: 'Bebas Neue', Impact, sans-serif;
+  --nk-font-body: 'Glacial Indifference', 'Manrope', system-ui, -apple-system, sans-serif;
+  --nk-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Radios y sombras */
+  --nk-radius-sm: 6px;
+  --nk-radius-md: 10px;
+  --nk-radius-lg: 16px;
+  --nk-shadow-sm: 0 1px 2px rgba(43, 43, 113, 0.06);
+  --nk-shadow-md: 0 4px 16px rgba(43, 43, 113, 0.08);
+  --nk-shadow-lg: 0 12px 32px rgba(43, 43, 113, 0.12);
+
+  /* Espaciado */
+  --nk-space-1: 4px;
+  --nk-space-2: 8px;
+  --nk-space-3: 12px;
+  --nk-space-4: 16px;
+  --nk-space-5: 24px;
+  --nk-space-6: 32px;
+  --nk-space-7: 48px;
+  --nk-space-8: 64px;
+
+  /* Layout */
+  --nk-sidebar-w: 248px;
+  --nk-topbar-h: 64px;
+}
+
+[data-theme="oscuro"] {
+  --nk-bg: #14142B;
+  --nk-surface: #1E1E3D;
+  --nk-surface-sunken: #17172E;
+  --nk-border: #35355C;
+
+  --nk-ink: #F2F1FA;
+  --nk-ink-soft: #B4B3D6;
+  --nk-ink-faint: #7E7DA3;
+
+  --nk-teal: #7C7CF0;
+  --nk-teal-deep: #52C7E4;
+  --nk-teal-tint: #26264D;
+
+  --nk-marigold: #FFB84D;
+  --nk-marigold-tint: #3A2C12;
+
+  --nk-coral: #FF7AA8;
+  --nk-coral-tint: #3A1F2C;
+
+  --nk-green: #9EDFC7;
+  --nk-green-tint: #16332A;
+
+  --nk-yellow: #F5D115;
+  --nk-yellow-tint: #3A340F;
+
+  --nk-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --nk-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --nk-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.45);
+}

@@ -1,0 +1,76 @@
+.nk-cuadre-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--nk-space-5);
+  flex-wrap: wrap;
+  gap: var(--nk-space-3);
+}
+
+.nk-cuadre-header input[type="date"] {
+  padding: 9px 12px;
+  border-radius: var(--nk-radius-sm);
+  border: 1px solid var(--nk-border);
+  background: var(--nk-surface);
+}
+
+.nk-cuadre-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--nk-space-4);
+  align-items: start;
+}
+
+.nk-cuadre-resumen, .nk-cuadre-form {
+  padding: var(--nk-space-4);
+}
+
+.nk-cuadre-linea {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 14px;
+}
+
+.nk-cuadre-linea-total {
+  font-weight: 700;
+  font-family: var(--nk-font-mono);
+  font-size: 16px;
+}
+
+.nk-cuadre-diferencia {
+  color: var(--nk-coral);
+}
+
+@media (max-width: 860px) {
+  .nk-cuadre-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.nk-tasa-card {
+  padding: var(--nk-space-3) var(--nk-space-4);
+  margin-bottom: var(--nk-space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--nk-space-4);
+  flex-wrap: wrap;
+}
+
+.nk-tasa-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.nk-tasa-input-row input {
+  width: 130px;
+  padding: 8px 10px;
+  border-radius: var(--nk-radius-sm);
+  border: 1px solid var(--nk-border);
+}
+
+.nk-cuadre-bs {
+  color: var(--nk-ink-soft);
+  font-size: 12px;
+  font-weight: 400;
+}
