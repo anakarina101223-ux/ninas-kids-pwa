@@ -34,7 +34,7 @@ const [guardandoTasa, setGuardandoTasa] = useState(false)
       supabase.from('tasas_cambio').select('*').eq('fecha', fecha).maybeSingle(),
     ])
 
-    const resumen = { efectivo: 0, pago_movil: 0, transferencia: 0, tarjeta: 0, mixto: 0 }
+    const resumen = { efectivo: 0, pm_transferencia: 0, usdt: 0, tarjeta: 0, mixto: 0 }
     for (const v of ventasDelDia ?? []) resumen[v.metodo_pago] += Number(v.total)
     for (const a of abonosDelDia ?? []) resumen[a.metodo_pago] += Number(a.monto)
     setResumenVentas(resumen)
@@ -82,8 +82,9 @@ const [guardandoTasa, setGuardandoTasa] = useState(false)
         usuario_id: user.id,
         efectivo_inicial: efectivoInicial,
         ventas_efectivo: ventasEfectivo,
-        ventas_pago_movil: resumenVentas.pago_movil,
-        ventas_transferencia: resumenVentas.transferencia,
+        ventas_pago_movil: resumenVentas.pm_transferencia,
+        ventas_transferencia: 0,
+        ventas_usdt: resumenVentas.usdt,
         ventas_tarjeta: resumenVentas.tarjeta,
         otros_ingresos: otrosIngresos,
         otros_ingresos_desc: form.otros_ingresos_desc || null,
@@ -159,19 +160,13 @@ const [guardandoTasa, setGuardandoTasa] = useState(false)
             <hr className="nk-stitch" style={{ margin: '10px 0' }} />
             <div className="nk-cuadre-linea"><span>Efectivo</span><span>${ventasEfectivo.toFixed(2)}</span></div>
             <div className="nk-cuadre-linea">
-                <span>Pago móvil</span>
-                <span>
-                    ${resumenVentas.pago_movil.toFixed(2)}
-                    {tasa && <span className="nk-cuadre-bs"> · Bs {(resumenVentas.pago_movil * tasa.valor).toFixed(2)}</span>}
-                </span>
+              <span>PM / Transferencia</span>
+              <span>
+                ${resumenVentas.pm_transferencia.toFixed(2)}
+                {tasa && <span className="nk-cuadre-bs"> · Bs {(resumenVentas.pm_transferencia * tasa.valor).toFixed(2)}</span>}
+              </span>
             </div>
-            <div className="nk-cuadre-linea">
-                <span>Transferencia</span>
-                <span>
-                    ${resumenVentas.transferencia.toFixed(2)}
-                    {tasa && <span className="nk-cuadre-bs"> · Bs {(resumenVentas.transferencia * tasa.valor).toFixed(2)}</span>}
-                </span>
-            </div>
+            <div className="nk-cuadre-linea"><span>USDT</span><span>${resumenVentas.usdt.toFixed(2)}</span></div>
             <div className="nk-cuadre-linea"><span>Tarjeta</span><span>${resumenVentas.tarjeta.toFixed(2)}</span></div>
             <div className="nk-cuadre-linea"><span>Mixto</span><span>${resumenVentas.mixto.toFixed(2)}</span></div>
             <hr className="nk-stitch" style={{ margin: '10px 0' }} />

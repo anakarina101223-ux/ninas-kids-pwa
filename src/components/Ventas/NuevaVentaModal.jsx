@@ -12,6 +12,8 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
   const [error, setError] = useState('')
   const [notasCredito, setNotasCredito] = useState([])
   const [aplicarCredito, setAplicarCredito] = useState(false)
+  const [tasaHoy, setTasaHoy] = useState(null)
+  const [porcentajeDescuento, setPorcentajeDescuento] = useState('')
 
   useEffect(() => {
     supabase.from('productos')
@@ -19,6 +21,12 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
       .gt('stock_actual', 0)
       .order('nombre')
       .then(({ data }) => setProductos(data ?? []))
+  }, [])
+
+  useEffect(() => {
+    const hoy = new Date().toLocaleDateString('en-CA')
+    supabase.from('tasas_cambio').select('valor').eq('fecha', hoy).maybeSingle()
+      .then(({ data }) => setTasaHoy(data?.valor ?? null))
   }, [])
 
   useEffect(() => {
@@ -63,9 +71,15 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
 
   const total = itemsConDetalle.reduce((sum, i) => sum + i.subtotal, 0)
 
+  const aplicaDescuento = metodoPago === 'efectivo' || metodoPago === 'usdt'
+  const descuentoMonto = aplicaDescuento ? total * (Number(porcentajeDescuento || 0) / 100) : 0
+  const totalConDescuento = total - descuentoMonto
+
   const saldoCreditoDisponible = notasCredito.reduce((sum, n) => sum + Number(n.saldo_disponible), 0)
-  const montoCreditoAplicado = aplicarCredito ? Math.min(saldoCreditoDisponible, total) : 0
-  const totalAPagar = total - montoCreditoAplicado
+  const montoCreditoAplicado = aplicarCredito ? Math.min(saldoCreditoDisponible, totalConDescuento) : 0
+  const totalAPagarSinRedondear = totalConDescuento - montoCreditoAplicado
+  const totalAPagar = metodoPago === 'efectivo' ? Math.round(totalAPagarSinRedondear) : totalAPagarSinRedondear
+  const ajustePorRedondeo = totalAPagar - totalAPagarSinRedondear
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -80,6 +94,8 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
       const { data: venta, error: ventaError } = await supabase.from('ventas')
         .insert({
           cliente_id: clienteId, total: totalAPagar, credito_aplicado: montoCreditoAplicado,
+          descuento_porcentaje: aplicaDescuento ? Number(porcentajeDescuento || 0) : 0,
+          descuento_monto: descuentoMonto,
           metodo_pago: metodoPago, estado, usuario_id: user.id,
         })
         .select().single()
@@ -147,15 +163,33 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
             </div>
             <div className="nk-field">
               <label>Método de pago</label>
-              <select value={metodoPago} onChange={(e) => setMetodoPago(e.target.value)}>
+              <select
+                value={metodoPago}
+                onChange={(e) => {
+                  setMetodoPago(e.target.value)
+                  if (!['efectivo', 'usdt'].includes(e.target.value)) setPorcentajeDescuento('')
+                }}
+              >
                 <option value="efectivo">Efectivo</option>
-                <option value="pago_movil">Pago móvil</option>
-                <option value="transferencia">Transferencia</option>
+                <option value="pm_transferencia">PM / Transferencia</option>
+                <option value="usdt">USDT</option>
                 <option value="tarjeta">Tarjeta</option>
                 <option value="mixto">Mixto</option>
               </select>
             </div>
           </div>
+
+          {aplicaDescuento && (
+            <div className="nk-field">
+              <label>Porcentaje a descontar (%)</label>
+              <input
+                type="number" min="0" max="100" step="0.1"
+                value={porcentajeDescuento}
+                onChange={(e) => setPorcentajeDescuento(e.target.value)}
+                placeholder="Ej: 10"
+              />
+            </div>
+          )}
 
           <div className="nk-field">
             <label>Estado del pago</label>
@@ -212,10 +246,16 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
             </label>
           )}
 
-          {montoCreditoAplicado > 0 && (
+          {(descuentoMonto > 0 || montoCreditoAplicado > 0) && (
             <div className="nk-venta-total" style={{ borderTop: 'none', paddingTop: 0, fontSize: 14, fontWeight: 400 }}>
               <span>Subtotal</span>
               <span>${total.toFixed(2)}</span>
+            </div>
+          )}
+          {descuentoMonto > 0 && (
+            <div className="nk-venta-total" style={{ borderTop: 'none', paddingTop: 0, fontSize: 14, fontWeight: 400, color: 'var(--nk-marigold)' }}>
+              <span>Descuento ({porcentajeDescuento}%)</span>
+              <span>−${descuentoMonto.toFixed(2)}</span>
             </div>
           )}
           {montoCreditoAplicado > 0 && (
@@ -224,10 +264,29 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
               <span>−${montoCreditoAplicado.toFixed(2)}</span>
             </div>
           )}
+          {ajustePorRedondeo !== 0 && (
+            <div className="nk-venta-total" style={{ borderTop: 'none', paddingTop: 0, fontSize: 13, fontWeight: 400, color: 'var(--nk-ink-soft)' }}>
+              <span>Ajuste por redondeo</span>
+              <span>{ajustePorRedondeo >= 0 ? '+' : ''}${ajustePorRedondeo.toFixed(2)}</span>
+            </div>
+          )}
           <div className="nk-venta-total">
-            <span>Total a pagar</span>
+            <span>{descuentoMonto > 0 ? 'Monto total con descuento' : 'Total a pagar'}</span>
             <span>${totalAPagar.toFixed(2)}</span>
           </div>
+
+          {metodoPago === 'pm_transferencia' && (
+            tasaHoy ? (
+              <div className="nk-venta-total" style={{ borderTop: 'none', paddingTop: 0, fontSize: 15, color: 'var(--nk-teal-deep)' }}>
+                <span>Equivalente en bolívares</span>
+                <span>Bs {(totalAPagar * tasaHoy).toFixed(2)}</span>
+              </div>
+            ) : (
+              <p className="nk-inv-card-meta" style={{ color: 'var(--nk-coral)' }}>
+                No hay tasa configurada para hoy — ve a Cuadre de caja para establecerla.
+              </p>
+            )
+          )}
 
           {error && <p className="nk-error-text" role="alert">{error}</p>}
 

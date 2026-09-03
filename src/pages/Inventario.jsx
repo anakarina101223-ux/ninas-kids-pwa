@@ -15,6 +15,7 @@ export default function Inventario() {
   const [filtroGenero, setFiltroGenero] = useState('todos')
   const [filtroCategoria, setFiltroCategoria] = useState('todas')
   const [busqueda, setBusqueda] = useState('')
+  const [mostrarArchivados, setMostrarArchivados] = useState(false)
 
   const [productoEditando, setProductoEditando] = useState(null)
   const [mostrarForm, setMostrarForm] = useState(false)
@@ -45,13 +46,14 @@ export default function Inventario() {
 
   const productosFiltrados = useMemo(() => {
     return productos.filter((p) => {
+      if (!mostrarArchivados && !p.activo) return false
       const cat = categorias.find((c) => c.id === p.categoria_id)
       if (filtroGenero !== 'todos' && cat?.genero !== filtroGenero) return false
       if (filtroCategoria !== 'todas' && p.categoria_id !== filtroCategoria) return false
       if (busqueda && !p.nombre.toLowerCase().includes(busqueda.toLowerCase()) && !(p.sku ?? '').toLowerCase().includes(busqueda.toLowerCase())) return false
       return true
     })
-  }, [productos, categorias, filtroGenero, filtroCategoria, busqueda])
+  }, [productos, categorias, filtroGenero, filtroCategoria, busqueda, mostrarArchivados])
 
   const nombreCategoria = (id) => categorias.find((c) => c.id === id)?.nombre ?? '—'
   const nombreSubcategoria = (id) => subcategorias.find((s) => s.id === id)?.nombre
@@ -60,8 +62,25 @@ export default function Inventario() {
   const abrirEditar = (p) => { setProductoEditando(p); setMostrarForm(true) }
 
   const eliminarProducto = async (p) => {
-    if (!confirm(`¿Eliminar "${p.nombre}"? Esta acción no se puede deshacer.`)) return
+    if (!confirm(`¿Eliminar "${p.nombre}"?`)) return
+
     const { error } = await supabase.from('productos').delete().eq('id', p.id)
+
+    if (error?.code === '23503') {
+      // Tiene ventas asociadas — no se puede borrar sin perder el historial, así que se archiva
+      const { error: archivarError } = await supabase.from('productos').update({ activo: false }).eq('id', p.id)
+      if (archivarError) { setError(archivarError.message); return }
+      alert(`"${p.nombre}" ya tiene ventas registradas, así que no se puede eliminar sin perder ese historial. Se archivó en su lugar — dejará de aparecer en el catálogo activo, pero sus ventas pasadas se conservan intactas.`)
+      cargarTodo()
+      return
+    }
+
+    if (error) { setError(error.message); return }
+    cargarTodo()
+  }
+
+  const reactivarProducto = async (p) => {
+    const { error } = await supabase.from('productos').update({ activo: true }).eq('id', p.id)
     if (error) setError(error.message)
     else cargarTodo()
   }
@@ -142,6 +161,11 @@ export default function Inventario() {
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
         />
+
+        <label className="nk-devolucion-item-check" style={{ fontWeight: 400, fontSize: 13 }}>
+          <input type="checkbox" checked={mostrarArchivados} onChange={(e) => setMostrarArchivados(e.target.checked)} />
+          Mostrar archivados
+        </label>
       </div>
 
       {error && <p className="nk-error-text" role="alert" style={{ margin: '12px 0' }}>{error}</p>}
@@ -173,10 +197,17 @@ export default function Inventario() {
                   <span className="nk-inv-card-precio">${Number(p.precio_venta).toFixed(2)}</span>
                   <span className="nk-inv-card-stock">Stock: {p.stock_actual}</span>
                 </div>
+                {!p.activo && <span className="nk-chip nk-chip-coral" style={{ alignSelf: 'flex-start' }}>Archivado</span>}
                 <div className="nk-inv-card-actions">
-                  <button className="nk-btn nk-btn-ghost" onClick={() => setProductoParaMovimiento(p)}>Ajustar stock</button>
-                  <button className="nk-btn nk-btn-ghost" onClick={() => abrirEditar(p)}>Editar</button>
-                  <button className="nk-btn nk-btn-danger" onClick={() => eliminarProducto(p)}>Eliminar</button>
+                  {p.activo ? (
+                    <>
+                      <button className="nk-btn nk-btn-ghost" onClick={() => setProductoParaMovimiento(p)}>Ajustar stock</button>
+                      <button className="nk-btn nk-btn-ghost" onClick={() => abrirEditar(p)}>Editar</button>
+                      <button className="nk-btn nk-btn-danger" onClick={() => eliminarProducto(p)}>Eliminar</button>
+                    </>
+                  ) : (
+                    <button className="nk-btn nk-btn-primary" onClick={() => reactivarProducto(p)}>Reactivar</button>
+                  )}
                 </div>
               </div>
             </div>

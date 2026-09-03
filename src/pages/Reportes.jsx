@@ -5,7 +5,7 @@ import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import './Reportes.css'
 
-const METODO_LABEL = { efectivo: 'Efectivo', pago_movil: 'Pago móvil', transferencia: 'Transferencia', tarjeta: 'Tarjeta', mixto: 'Mixto' }
+const METODO_LABEL = { efectivo: 'Efectivo', pm_transferencia: 'PM / Transferencia', usdt: 'USDT', tarjeta: 'Tarjeta', mixto: 'Mixto' }
 
 const mesActualISO = () => {
   const d = new Date()

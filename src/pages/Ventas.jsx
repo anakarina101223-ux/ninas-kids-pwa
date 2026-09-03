@@ -4,10 +4,7 @@ import NuevaVentaModal from '../components/Ventas/NuevaVentaModal'
 import DevolucionModal from '../components/Ventas/DevolucionModal'
 import './Ventas.css'
 
-const METODO_LABEL = {
-  efectivo: 'Efectivo', pago_movil: 'Pago móvil', transferencia: 'Transferencia',
-  tarjeta: 'Tarjeta', mixto: 'Mixto',
-}
+const METODO_LABEL = { efectivo: 'Efectivo', pm_transferencia: 'PM / Transferencia', usdt: 'USDT', tarjeta: 'Tarjeta', mixto: 'Mixto' }
 
 export default function Ventas() {
   const [ventas, setVentas] = useState([])

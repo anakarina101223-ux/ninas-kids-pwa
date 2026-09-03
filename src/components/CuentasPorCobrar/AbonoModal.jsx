@@ -60,8 +60,8 @@ export default function AbonoModal({ cuenta, cliente, onCerrar, onGuardado }) {
             <label>Método de pago</label>
             <select value={metodoPago} onChange={(e) => setMetodoPago(e.target.value)}>
               <option value="efectivo">Efectivo</option>
-              <option value="pago_movil">Pago móvil</option>
-              <option value="transferencia">Transferencia</option>
+              <option value="pm_transferencia">PM / Transferencia</option>
+              <option value="usdt">USDT</option>
               <option value="tarjeta">Tarjeta</option>
             </select>
           </div>
