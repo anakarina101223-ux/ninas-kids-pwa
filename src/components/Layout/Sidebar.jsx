@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { to: '/cuentas-por-cobrar', label: 'Cuentas por cobrar', icon: '💳' },
   { to: '/cuadre-caja', label: 'Cuadre de caja', icon: '🗃' },
   { to: '/reportes', label: 'Reportes', icon: '📊' },
+  { to: '/banco', label: 'Banco', icon: '🏦' },
 ]
 
 export default function Sidebar({ abierto, onCerrar }) {

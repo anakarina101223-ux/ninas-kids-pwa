@@ -11,6 +11,7 @@ import Ventas from './pages/Ventas'
 import CuentasPorCobrar from './pages/CuentasPorCobrar'
 import CuadreCaja from './pages/CuadreCaja'
 import Reportes from './pages/Reportes'
+import Banco from './pages/Banco'
 import { ThemeProvider } from './themes/ThemeContext'
 
 export default function App() {
@@ -34,6 +35,7 @@ export default function App() {
               <Route path="cuentas-por-cobrar" element={<CuentasPorCobrar />} />
               <Route path="cuadre-caja" element={<CuadreCaja />} />
               <Route path="reportes" element={<Reportes />} />
+              <Route path="banco" element={<Banco />} />
               <Route
                 path="usuarios"
                 element={
