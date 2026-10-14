@@ -23,8 +23,21 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}']
-      }
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) =>
+              url.hostname.endsWith('.supabase.co') &&
+              url.pathname.includes('/storage/v1/object/public/productos/'),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'imagenes-productos',
+              expiration: { maxEntries: 500, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+        ],
+      },
     })
   ]
 })

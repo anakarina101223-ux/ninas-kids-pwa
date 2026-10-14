@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react'
 import { supabase } from '../../lib/supabaseClient'
+import { comprimirImagen } from '../../lib/comprimirImagen'
 import './ProductoForm.css'
 
 const VACIO = {
   categoria_id: '', subcategoria_id: '', nombre: '', talla: '', color: '',
-  precio_costo: '', comision: '', precio_venta: '', stock_actual: '', stock_minimo: '3', sku: '',
+  precio_costo: '', comision: '', precio_venta: '', stock_actual: '', stock_minimo: '0', sku: '',
 }
 
 export default function ProductoForm({ producto, categorias, subcategorias, onCerrar, onGuardado }) {
@@ -21,7 +22,7 @@ export default function ProductoForm({ producto, categorias, subcategorias, onCe
           comision: producto.comision ?? '',
           precio_venta: producto.precio_venta ?? '',
           stock_actual: producto.stock_actual ?? '',
-          stock_minimo: producto.stock_minimo ?? '3',
+          stock_minimo: producto.stock_minimo ?? '0',
           sku: producto.sku ?? '',
         }
       : VACIO
@@ -48,9 +49,11 @@ export default function ProductoForm({ producto, categorias, subcategorias, onCe
       let imagen_url = producto?.imagen_url ?? null
 
       if (archivoImagen) {
-        const ext = archivoImagen.name.split('.').pop()
-        const ruta = `${crypto.randomUUID()}.${ext}`
-        const { error: uploadError } = await supabase.storage.from('productos').upload(ruta, archivoImagen)
+        const imagenComprimida = await comprimirImagen(archivoImagen)
+        const ruta = `${crypto.randomUUID()}.jpg`
+        const { error: uploadError } = await supabase.storage
+          .from('productos')
+          .upload(ruta, imagenComprimida, { contentType: 'image/jpeg', cacheControl: '31536000' })
         if (uploadError) throw uploadError
         const { data: urlData } = supabase.storage.from('productos').getPublicUrl(ruta)
         imagen_url = urlData.publicUrl

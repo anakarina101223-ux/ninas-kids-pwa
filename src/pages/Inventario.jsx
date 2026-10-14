@@ -178,7 +178,7 @@ export default function Inventario() {
             <div key={p.id} className="nk-card nk-inv-card">
               <div className="nk-inv-card-img">
                 {p.imagen_url
-                  ? <img src={p.imagen_url} alt={p.nombre} />
+                  ? <img src={p.imagen_url} alt={p.nombre} loading="lazy" decoding="async" />
                   : <div className="nk-inv-card-img-placeholder">👕</div>}
                 {p.stock_actual <= p.stock_minimo && (
                   <span className="nk-chip nk-chip-coral nk-inv-card-badge">Stock bajo</span>
