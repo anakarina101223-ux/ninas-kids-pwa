@@ -1,4 +1,9 @@
 .nk-cxc-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--nk-space-4);
+  flex-wrap: wrap;
   margin-bottom: var(--nk-space-4);
 }
 
@@ -96,4 +101,22 @@
   font-weight: 600;
   color: var(--nk-ink);
   margin-left: auto;
+}
+
+.nk-cxc-descripcion {
+  font-size: 13px;
+  color: var(--nk-ink-soft);
+  margin-top: 2px;
+}
+
+.nk-cxc-item-acciones {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.nk-cxc-item-acciones .nk-btn {
+  padding: 7px 12px;
+  font-size: 13px;
 }

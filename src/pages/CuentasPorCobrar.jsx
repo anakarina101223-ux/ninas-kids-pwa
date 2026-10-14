@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import AbonoModal from '../components/CuentasPorCobrar/AbonoModal'
+import NuevaCuentaModal from '../components/CuentasPorCobrar/NuevaCuentaModal'
 import './CuentasPorCobrar.css'
 
 export default function CuentasPorCobrar() {
@@ -12,12 +13,14 @@ export default function CuentasPorCobrar() {
   const [filtroCliente, setFiltroCliente] = useState('todos')
   const [cuentaParaAbono, setCuentaParaAbono] = useState(null)
   const [abonos, setAbonos] = useState([])
+  const [mostrarNuevaCuenta, setMostrarNuevaCuenta] = useState(false)
+  const [cuentaEditando, setCuentaEditando] = useState(null)
 
   const cargar = useCallback(async () => {
     setCargando(true)
     const [{ data: c, error: e1 }, { data: cl, error: e2 }, { data: ab, error: e3 }] = await Promise.all([
     supabase.from('cuentas_por_cobrar')
-        .select('id, venta_id, cliente_id, monto_total, monto_pagado, saldo, estado, fecha_limite, fecha')
+        .select('id, venta_id, cliente_id, monto_total, monto_pagado, saldo, estado, fecha_limite, fecha, descripcion')
         .order('fecha', { ascending: false }),
     supabase.from('clientes').select('id, nombre, telefono').order('nombre'),
     supabase.from('abonos').select('id, cuenta_id, monto, metodo_pago, fecha').order('fecha', { ascending: false }),
@@ -56,6 +59,19 @@ export default function CuentasPorCobrar() {
 
   const METODO_LABEL = { efectivo: 'Efectivo', pago_movil: 'Pago móvil', transferencia: 'Transferencia', tarjeta: 'Tarjeta' }
   const abonosDeCuenta = (cuentaId) => abonos.filter((a) => a.cuenta_id === cuentaId)
+  const eliminarCuenta = async (c) => {
+    const abonosCuenta = abonosDeCuenta(c.id)
+    const totalAbonos = abonosCuenta.reduce((s, a) => s + Number(a.monto), 0)
+    const aviso = abonosCuenta.length > 0
+      ? `\n\nEsta cuenta tiene ${abonosCuenta.length} abono(s) registrado(s) en el sistema por $${totalAbonos.toFixed(2)}. También se eliminarán, y dejarán de contar en el Cuadre de caja y en los Reportes de los días en que se recibieron.`
+      : ''
+
+    if (!confirm(`¿Eliminar la cuenta de ${nombreCliente(c.cliente_id)} por $${Number(c.monto_total).toFixed(2)}?${aviso}\n\nEsta acción no se puede deshacer.`)) return
+
+    const { error } = await supabase.from('cuentas_por_cobrar').delete().eq('id', c.id)
+    if (error) setError(error.message)
+    else cargar()
+  }
 
   return (
     <div>
@@ -66,6 +82,9 @@ export default function CuentasPorCobrar() {
             Total pendiente: <strong style={{ color: 'var(--nk-coral)' }}>${totalPendiente.toFixed(2)}</strong>
           </p>
         </div>
+        <button className="nk-btn nk-btn-primary" onClick={() => setMostrarNuevaCuenta(true)}>
+          + Nueva cuenta
+        </button>
       </div>
 
       <div className="nk-cxc-filtros">
@@ -107,8 +126,10 @@ export default function CuentasPorCobrar() {
                     <div key={c.id} className="nk-cxc-item-wrap">
                         <div className="nk-cxc-item">
                         <div>
-                            <span className="nk-inv-card-meta">{new Date(c.fecha).toLocaleDateString('es-VE', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
-                            {c.fecha_limite && <span className="nk-inv-card-meta"> · vence {new Date(c.fecha_limite).toLocaleDateString('es-VE')}</span>}
+                          <span className="nk-inv-card-meta">{new Date(c.fecha).toLocaleDateString('es-VE', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                          {c.fecha_limite && <span className="nk-inv-card-meta"> · vence {new Date(c.fecha_limite).toLocaleDateString('es-VE')}</span>}
+                          {!c.venta_id && <span className="nk-chip nk-chip-marigold" style={{ marginLeft: 8 }}>Manual</span>}
+                          {c.descripcion && <div className="nk-cxc-descripcion">{c.descripcion}</div>}
                         </div>
                         <div className="nk-cxc-item-montos">
                             <span>${Number(c.monto_total).toFixed(2)} total</span>
@@ -118,9 +139,17 @@ export default function CuentasPorCobrar() {
                         <span className={`nk-chip ${c.estado === 'pagada' ? 'nk-chip-green' : 'nk-chip-coral'}`}>
                             {c.estado === 'pagada' ? 'Pagada' : 'Pendiente'}
                         </span>
-                        {c.estado === 'pendiente' && (
+                        <div className="nk-cxc-item-acciones">
+                          {c.estado === 'pendiente' && (
                             <button className="nk-btn nk-btn-primary" onClick={() => setCuentaParaAbono(c)}>Registrar abono</button>
-                        )}
+                          )}
+                          {!c.venta_id && (
+                            <>
+                              <button className="nk-btn nk-btn-ghost" onClick={() => setCuentaEditando(c)}>Editar</button>
+                              <button className="nk-btn nk-btn-danger" onClick={() => eliminarCuenta(c)}>Eliminar</button>
+                            </>
+                          )}
+                        </div>
                         </div>
 
                         {abonosDeCuenta(c.id).length > 0 && (
@@ -150,6 +179,16 @@ export default function CuentasPorCobrar() {
           cliente={nombreCliente(cuentaParaAbono.cliente_id)}
           onCerrar={() => setCuentaParaAbono(null)}
           onGuardado={() => { setCuentaParaAbono(null); cargar() }}
+        />
+      )}
+
+      {(mostrarNuevaCuenta || cuentaEditando) && (
+        <NuevaCuentaModal
+          clientes={clientes}
+          cuenta={cuentaEditando}
+          abonosCuenta={cuentaEditando ? abonosDeCuenta(cuentaEditando.id) : []}
+          onCerrar={() => { setMostrarNuevaCuenta(false); setCuentaEditando(null) }}
+          onGuardado={() => { setMostrarNuevaCuenta(false); setCuentaEditando(null); cargar() }}
         />
       )}
     </div>

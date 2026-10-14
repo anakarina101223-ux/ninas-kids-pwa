@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react'
 import { supabase } from '../../lib/supabaseClient'
+const NUEVO = '__nuevo__'
 
 export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
   const [productos, setProductos] = useState([])
@@ -14,6 +15,10 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
   const [aplicarCredito, setAplicarCredito] = useState(false)
   const [tasaHoy, setTasaHoy] = useState(null)
   const [porcentajeDescuento, setPorcentajeDescuento] = useState('')
+  const [nombreNuevo, setNombreNuevo] = useState('')
+  const [telefonoNuevo, setTelefonoNuevo] = useState('')
+  const [clienteCreadoId, setClienteCreadoId] = useState(null)
+  const esNuevo = clienteId === NUEVO
 
   useEffect(() => {
     supabase.from('productos')
@@ -30,7 +35,7 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
   }, [])
 
   useEffect(() => {
-    if (!clienteId) { setNotasCredito([]); setAplicarCredito(false); return }
+    if (!clienteId || clienteId === NUEVO) { setNotasCredito([]); setAplicarCredito(false); return }
     supabase.from('notas_credito')
       .select('id, saldo_disponible')
       .eq('cliente_id', clienteId)
@@ -85,15 +90,37 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
     e.preventDefault()
     setError('')
     if (!clienteId) { setError('Selecciona un cliente.'); return }
+    if (esNuevo) {
+      const nombre = nombreNuevo.trim()
+      if (!nombre) { setError('Escribe el nombre del cliente nuevo.'); return }
+      if (clientes.some((c) => c.nombre.trim().toLowerCase() === nombre.toLowerCase())) {
+        setError('Ya existe un cliente con ese nombre. Selecciónalo en la lista.')
+        return
+      }
+    }    
     if (items.length === 0) { setError('Agrega al menos un producto.'); return }
 
     setGuardando(true)
     try {
       const { data: { user } } = await supabase.auth.getUser()
 
+      let idCliente = clienteId
+      if (esNuevo) {
+        if (clienteCreadoId) {
+          idCliente = clienteCreadoId
+        } else {
+          const { data: nuevo, error: errCliente } = await supabase.from('clientes')
+            .insert({ nombre: nombreNuevo.trim(), telefono: telefonoNuevo.trim() || null })
+            .select('id').single()
+          if (errCliente) throw errCliente
+          idCliente = nuevo.id
+          setClienteCreadoId(nuevo.id)
+        }
+      }
+
       const { data: venta, error: ventaError } = await supabase.from('ventas')
         .insert({
-          cliente_id: clienteId, total: totalAPagar, credito_aplicado: montoCreditoAplicado,
+          cliente_id: idCliente, total: totalAPagar, credito_aplicado: montoCreditoAplicado,
           descuento_porcentaje: aplicaDescuento ? Number(porcentajeDescuento || 0) : 0,
           descuento_monto: descuentoMonto,
           metodo_pago: metodoPago, estado, usuario_id: user.id,
@@ -125,7 +152,7 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
       // Si la venta queda pendiente, generar automáticamente su cuenta por cobrar
       if (estado === 'pendiente') {
         const { error: cuentaError } = await supabase.from('cuentas_por_cobrar')
-          .insert({ venta_id: venta.id, cliente_id: clienteId, monto_total: totalAPagar })
+          .insert({ venta_id: venta.id, cliente_id: idCliente, monto_total: totalAPagar })
         if (cuentaError) throw cuentaError
       }
 
@@ -159,6 +186,7 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
               <select required value={clienteId} onChange={(e) => setClienteId(e.target.value)}>
                 <option value="" disabled>Selecciona un cliente</option>
                 {clientes.map((c) => <option key={c.id} value={c.id}>{c.nombre}</option>)}
+                <option value={NUEVO}>Agregar cliente…</option>
               </select>
             </div>
             <div className="nk-field">
@@ -178,6 +206,19 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
               </select>
             </div>
           </div>
+
+          {esNuevo && (
+            <div className="nk-producto-form-row">
+              <div className="nk-field">
+                <label>Nombre del cliente</label>
+                <input value={nombreNuevo} onChange={(e) => setNombreNuevo(e.target.value)} />
+              </div>
+              <div className="nk-field">
+                <label>Teléfono (opcional)</label>
+                <input value={telefonoNuevo} onChange={(e) => setTelefonoNuevo(e.target.value)} />
+              </div>
+            </div>
+          )}
 
           {aplicaDescuento && (
             <div className="nk-field">

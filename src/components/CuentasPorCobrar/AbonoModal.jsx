@@ -31,7 +31,7 @@ export default function AbonoModal({ cuenta, cliente, onCerrar, onGuardado }) {
       if (cuentaError) throw cuentaError
 
       // Si con este abono queda saldada, reflejarlo también en la venta original
-      if (nuevoEstado === 'pagada') {
+      if (nuevoEstado === 'pagada' && cuenta.venta_id) {
         await supabase.from('ventas').update({ estado: 'pagada' }).eq('id', cuenta.venta_id)
       }
 
