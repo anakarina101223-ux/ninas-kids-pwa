@@ -1,6 +1,14 @@
 import { useEffect, useState, useMemo } from 'react'
 import { supabase } from '../../lib/supabaseClient'
 const NUEVO = '__nuevo__'
+const r2 = (n) => Math.round(n * 100) / 100
+const METODOS_MIXTO = [
+  ['efectivo', 'Efectivo'],
+  ['pm_transferencia', 'PM / Transferencia'],
+  ['usdt', 'USDT'],
+  ['zelle', 'Zelle'],
+  ['tarjeta', 'Tarjeta'],
+]
 
 export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
   const [productos, setProductos] = useState([])
@@ -19,6 +27,7 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
   const [telefonoNuevo, setTelefonoNuevo] = useState('')
   const [clienteCreadoId, setClienteCreadoId] = useState(null)
   const esNuevo = clienteId === NUEVO
+  const [pagosMixto, setPagosMixto] = useState({ efectivo: '', pm_transferencia: '', usdt: '', zelle: '', tarjeta: '' })
 
   useEffect(() => {
     supabase.from('productos')
@@ -84,6 +93,9 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
   const montoCreditoAplicado = aplicarCredito ? Math.min(saldoCreditoDisponible, totalConDescuento) : 0
   const totalAPagarSinRedondear = totalConDescuento - montoCreditoAplicado
   const totalAPagar = metodoPago === 'efectivo' ? Math.round(totalAPagarSinRedondear) : totalAPagarSinRedondear
+  const esMixtoPagado = metodoPago === 'mixto' && estado === 'pagada'
+const sumaMixto = r2(Object.values(pagosMixto).reduce((s, v) => s + (Number(v) || 0), 0))
+const faltaMixto = r2(totalAPagar - sumaMixto)
   const ajustePorRedondeo = totalAPagar - totalAPagarSinRedondear
 
   const handleSubmit = async (e) => {
@@ -99,6 +111,11 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
       }
     }    
     if (items.length === 0) { setError('Agrega al menos un producto.'); return }
+
+    if (esMixtoPagado && faltaMixto !== 0) {
+      setError('Los montos por método deben sumar exactamente el total a pagar.')
+      return
+    }
 
     setGuardando(true)
     try {
@@ -127,6 +144,14 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
         })
         .select().single()
       if (ventaError) throw ventaError
+
+      if (esMixtoPagado) {
+        const filasPagos = METODOS_MIXTO
+          .map(([clave]) => ({ venta_id: venta.id, metodo: clave, monto: Number(pagosMixto[clave]) || 0 }))
+          .filter((p) => p.monto > 0)
+        const { error: pagosError } = await supabase.from('venta_pagos').insert(filasPagos)
+        if (pagosError) throw pagosError
+      }
 
       // Descontar el crédito usado de la(s) nota(s), empezando por las más antiguas
       if (montoCreditoAplicado > 0) {
@@ -201,6 +226,7 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
                 <option value="efectivo">Efectivo</option>
                 <option value="pm_transferencia">PM / Transferencia</option>
                 <option value="usdt">USDT</option>
+                <option value="zelle">Zelle</option>
                 <option value="tarjeta">Tarjeta</option>
                 <option value="mixto">Mixto</option>
               </select>
@@ -239,6 +265,25 @@ export default function NuevaVentaModal({ clientes, onCerrar, onGuardado }) {
               <option value="pendiente">Pendiente (queda a crédito)</option>
             </select>
           </div>
+
+          {esMixtoPagado && (
+            <div className="nk-producto-resumen">
+              <p className="nk-inv-card-meta" style={{ margin: '0 0 8px' }}>¿Cuánto se pagó con cada método? (en $)</p>
+              <div className="nk-mixto-grid">
+                {METODOS_MIXTO.map(([clave, etiqueta]) => (
+                  <div key={clave} className="nk-field">
+                    <label>{etiqueta}</label>
+                    <input type="number" step="0.01" min="0" value={pagosMixto[clave]}
+                      onChange={(e) => setPagosMixto({ ...pagosMixto, [clave]: e.target.value })} />
+                  </div>
+                ))}
+              </div>
+              <div className="nk-cuadre-linea" style={{ color: faltaMixto === 0 ? 'var(--nk-green)' : 'var(--nk-coral)' }}>
+                <span>{faltaMixto === 0 ? 'Completo' : faltaMixto > 0 ? 'Falta por asignar' : 'Se pasó por'}</span>
+                <span>${Math.abs(faltaMixto).toFixed(2)}</span>
+              </div>
+            </div>
+          )}
 
           <hr className="nk-stitch" />
 

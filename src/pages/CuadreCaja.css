@@ -74,3 +74,79 @@
   font-size: 12px;
   font-weight: 400;
 }
+
+.nk-cuadre-doc {
+  max-width: 640px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.nk-cuadre-seccion {
+  padding: 8px 16px;
+  font-family: var(--nk-font-display);
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.nk-cuadre-seccion-ingresos { background: var(--nk-teal); }
+.nk-cuadre-seccion-egresos { background: var(--nk-coral); }
+.nk-cuadre-seccion-caja { background: var(--nk-marigold); }
+
+.nk-cuadre-cuerpo {
+  padding: 4px 16px 14px;
+}
+
+.nk-cuadre-doc .nk-cuadre-linea {
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px dashed var(--nk-border);
+}
+
+.nk-cuadre-doc .nk-cuadre-linea-sub {
+  padding-left: 16px;
+  color: var(--nk-ink-soft);
+}
+
+.nk-cuadre-doc .nk-cuadre-linea-resalte {
+  background: var(--nk-teal-tint);
+  margin: 8px -16px 0;
+  padding: 12px 16px;
+  font-size: 16px;
+  border-bottom: none;
+}
+
+.nk-cuadre-input {
+  width: 120px;
+  padding: 6px 8px;
+  border-radius: var(--nk-radius-sm);
+  border: 1px solid var(--nk-border);
+  background: var(--nk-surface);
+  color: var(--nk-ink);
+  text-align: right;
+}
+
+.nk-cuadre-extra {
+  display: flex;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.nk-cuadre-extra input {
+  padding: 6px 8px;
+  border-radius: var(--nk-radius-sm);
+  border: 1px solid var(--nk-border);
+  background: var(--nk-surface);
+  color: var(--nk-ink);
+}
+.nk-cuadre-extra input:first-child { flex: 1; }
+.nk-cuadre-extra input[type="number"] { width: 110px; text-align: right; }
+
+.nk-cuadre-acciones {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}

@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { to: '/cuadre-caja', label: 'Cuadre de caja', icon: '🗃' },
   { to: '/reportes', label: 'Reportes', icon: '📊' },
   { to: '/banco', label: 'Banco', icon: '🏦' },
+  { to: '/gastos', label: 'Gastos', icon: '💸' },
 ]
 
 export default function Sidebar({ abierto, onCerrar }) {

@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { supabase } from '../../lib/supabaseClient'
 
-export default function MovimientoBancoForm({ movimiento, onCerrar, onGuardado }) {
+export default function MovimientoBancoForm({ movimiento, cuenta, onCerrar, onGuardado }) {
+  const cuentaActual = movimiento?.cuenta ?? cuenta
+  const moneda = cuentaActual === 'usd' ? '$' : 'Bs.'
   const esEdicion = Boolean(movimiento)
   const [fecha, setFecha] = useState(movimiento?.fecha ?? new Date().toLocaleDateString('en-CA'))
   const [descripcion, setDescripcion] = useState(movimiento?.descripcion ?? '')
@@ -22,6 +24,7 @@ export default function MovimientoBancoForm({ movimiento, onCerrar, onGuardado }
     const payload = {
       fecha,
       descripcion,
+      cuenta: cuentaActual,
       debe: tipo === 'debe' ? montoNum : 0,
       haber: tipo === 'haber' ? montoNum : 0,
       usuario_id: user.id,
@@ -51,7 +54,9 @@ export default function MovimientoBancoForm({ movimiento, onCerrar, onGuardado }
           <div className="nk-field">
             <label>Descripción</label>
             <input required value={descripcion} onChange={(e) => setDescripcion(e.target.value)}
-              placeholder="Ej: Venta 166$, Compra 50$ tasa 850 efectivo, Comisión…" />
+              placeholder={cuentaActual === 'usd'
+                ? 'Ej: Venta 32$, Compra Zara, Cambio Zelle…'
+                : 'Ej: Venta 166$, Compra 50$ tasa 850 efectivo, Comisión…'} />
           </div>
 
           <div className="nk-producto-form-row">
@@ -63,7 +68,7 @@ export default function MovimientoBancoForm({ movimiento, onCerrar, onGuardado }
               </select>
             </div>
             <div className="nk-field">
-              <label>Monto</label>
+              <label>Monto ({moneda})</label>
               <input required type="number" step="0.01" min="0.01" value={monto} onChange={(e) => setMonto(e.target.value)} />
             </div>
           </div>

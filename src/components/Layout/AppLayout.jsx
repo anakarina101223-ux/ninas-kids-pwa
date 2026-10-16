@@ -14,6 +14,8 @@ const TITULOS_POR_RUTA = {
   '/cuentas-por-cobrar': 'Cuentas por cobrar',
   '/cuadre-caja': 'Cuadre de caja',
   '/reportes': 'Reportes',
+  '/banco': 'Banco',
+  '/gastos': 'Gastos',
 }
 
 export default function AppLayout() {

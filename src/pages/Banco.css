@@ -1,10 +1,18 @@
 .nk-banco-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: var(--nk-space-4);
   margin-bottom: var(--nk-space-4);
   flex-wrap: wrap;
+}
+
+.nk-banco-controles {
+  display: flex;
+  align-items: center;
+  gap: var(--nk-space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--nk-space-4);
 }
 
 .nk-banco-mes {
@@ -12,7 +20,6 @@
   border-radius: var(--nk-radius-sm);
   border: 1px solid var(--nk-border);
   background: var(--nk-surface);
-  margin-bottom: var(--nk-space-4);
 }
 
 .nk-banco-table-wrap {

@@ -62,6 +62,7 @@ export default function AbonoModal({ cuenta, cliente, onCerrar, onGuardado }) {
               <option value="efectivo">Efectivo</option>
               <option value="pm_transferencia">PM / Transferencia</option>
               <option value="usdt">USDT</option>
+              <option value="zelle">Zelle</option>
               <option value="tarjeta">Tarjeta</option>
             </select>
           </div>
